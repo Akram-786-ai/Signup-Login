@@ -3,38 +3,41 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+    const [username, setUsername] = useState("");
 
     useEffect(() => {
-        // LocalStorage se user data read karo
-        const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        // Get logged-in user data from LocalStorage
+        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-        // Agar login nahi hai to redirect to login page
-        if (!isLoggedIn || !loggedUser) {
+        // If not logged in, redirect to Login page
+        if (!isLoggedIn) {
             navigate("/login");
-        } else {
-            setUser(loggedUser);
+        } else if (loggedInUser) {
+            setUsername(loggedInUser.username);
         }
     }, [navigate]);
 
+    // Logout function
     const handleLogout = () => {
         localStorage.removeItem("loggedInUser");
         localStorage.removeItem("isLoggedIn");
+        alert("You have logged out successfully!");
         navigate("/login");
     };
 
     return (
-        <div className="flex justify-center items-center h-screen from-pink-500 to-purple-600 bg-gradient-to-r">
-            <div className="bg-white p-6 rounded shadow-md w-full max-w-sm text-center">
-                <h1 className="text-black text-3xl font-bold p-5">
-                    Welcome, {user ? user.username : "Guest"} 👋
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-pink-500 to-purple-600 px-4">
+            <div className="bg-white w-full max-w-md sm:max-w-sm md:max-w-md lg:max-w-lg p-6 sm:p-8 rounded-xl shadow-lg text-center">
+                <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+                    Welcome 👋
                 </h1>
-
+                <p className="text-lg sm:text-xl text-gray-600 mb-6">
+                    {username ? `Hello, ${username}!` : "Loading..."}
+                </p>
                 <button
                     onClick={handleLogout}
-                    className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-                    type="button"
+                    className="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition duration-300 font-medium"
                 >
                     Logout
                 </button>
